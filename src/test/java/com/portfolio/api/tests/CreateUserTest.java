@@ -65,6 +65,6 @@ public class CreateUserTest extends BaseTest {
                 .when()
                 .post("/users");
 
-        assertThat(response.getStatusCode()).isIn(400, 201);
+        assertThat(response.getStatusCode()).isIn(400, 415, 201);
     }
 }

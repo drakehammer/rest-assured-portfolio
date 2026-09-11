@@ -27,6 +27,7 @@ jobs:
       - name: Get Allure history
         uses: actions/checkout@v4
         if: always()
+        continue-on-error: true
         with:
           ref: gh-pages
           path: gh-pages
@@ -36,12 +37,13 @@ jobs:
         if: always()
         with:
           allure_results: target/allure-results
+          allure_history: gh-pages/allure-history
 
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         if: always()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure-history
+          publish_dir: allure-report
           publish_branch: gh-pages
           force_orphan: true
