@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="REST Assured Portfolio Suite" verbose="1">
+    <test name="Usuarios - CRUD">
+        <classes>
+            <class name="com.portfolio.api.tests.GetUsersTest"/>
+            <class name="com.portfolio.api.tests.CreateUserTest"/>
+            <class name="com.portfolio.api.tests.UpdateUserTest"/>
+            <class name="com.portfolio.api.tests.DeleteUserTest"/>
+        </classes>
+    </test>
+</suite>
