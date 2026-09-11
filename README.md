@@ -63,12 +63,11 @@ mvn clean test
 
 ### Reporte Interactivo (Live)
 El proyecto cuenta con un pipeline de CI/CD que despliega automáticamente los resultados en GitHub Pages. Puedes acceder al reporte interactivo aquí:
-👉 **[Link al Reporte de Allure](https://<TU_USUARIO>.github.io/rest-assured-portfolio/)** *(Sustituir con tu link de GH Pages)*
+👉 **[Link al Reporte de Allure](https://drakehammer.github.io/rest-assured-portfolio/)**
 
 ### Capturas de Pantalla
-*(Sugerencia: Sube imágenes a una carpeta `/screenshots` en el repo y enlaza aquí)*
-- **Dashboard de Allure:** `![Dashboard](screenshots/dashboard.png)`
-- **Detalle de ejecución:** `![Execution](screenshots/execution.png)`
+- **Dashboard de Allure:** ![Dashboard](screenshots/dashboard.png)
+- **Detalle de ejecución:** ![Execution](screenshots/execution.png)
 
 ## 🧪 Casos cubiertos
 
@@ -82,4 +81,4 @@ El proyecto cuenta con un pipeline de CI/CD que despliega automáticamente los r
 ---
 
 **Autor:** Diego Fernando Caldas A. — Ingeniero de Sistemas | QA Automation
-**LinkedIn:** [Tu Perfil de LinkedIn] | **GitHub:** [Tu Perfil de GitHub]
+**LinkedIn:** [diegocaldasafanador](https://www.linkedin.com/in/diegocaldasafanador/) | **GitHub:** [drakehammer](https://github.com/drakehammer)

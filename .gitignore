@@ -3,3 +3,8 @@ target/
 *.iml
 allure-results/
 allure-report/
+docs_internal/
+
+# Ignorar carpetas y archivos ocultos (punto)
+.*
+!.github/
