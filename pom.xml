@@ -18,7 +18,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <rest-assured.version>5.4.0</rest-assured.version>
-        <testng.version>7.9.0</testng.version>
         <jackson.version>2.17.0</jackson.version>
         <allure.version>2.25.0</allure.version>
         <aspectj.version>1.9.21</aspectj.version>
@@ -37,11 +36,24 @@
             <version>${rest-assured.version}</version>
         </dependency>
 
-        <!-- TestNG -->
+        <!-- JUnit 5 (Jupiter) -->
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.10.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.10.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.10.2</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- Jackson para mapear POJOs -->
@@ -66,6 +78,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- WireMock para simulación de servicios (Mocking) -->
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8</artifactId>
+            <version>2.35.0</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- AssertJ para aserciones fluidas y potentes -->
         <dependency>
             <groupId>org.assertj</groupId>
@@ -83,9 +103,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
                 <configuration>
-                    <suiteXmlFiles>
-                        <suiteXmlFile>testng.xml</suiteXmlFile>
-                    </suiteXmlFiles>
                     <argLine>
                         -javaagent:"${settings.localRepository}"/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar
                     </argLine>

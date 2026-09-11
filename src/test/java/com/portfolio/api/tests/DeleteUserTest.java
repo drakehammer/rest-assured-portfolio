@@ -8,7 +8,7 @@ import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import io.restassured.response.Response;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Feature("Usuarios - Eliminación (DELETE)")
 public class DeleteUserTest extends BaseTest {
 
-    @Test(description = "Eliminar un usuario existente debe devolver 204 sin contenido")
+    @Test
     @Story("Baja de usuario")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verifica que DELETE /users/{id} responda 204 No Content, "
@@ -25,10 +25,10 @@ public class DeleteUserTest extends BaseTest {
         Response response = userClient.deleteUser(2);
 
         response.then()
-                .statusCode(204);
+                .spec(noContentResponseSpec);
     }
 
-    @Test(description = "Intentar eliminar un usuario que no existe")
+    @Test
     @Story("Manejo de errores - Recurso no encontrado")
     @Severity(SeverityLevel.NORMAL)
     @Description("Envía DELETE /users/{id} con un id inexistente y valida la respuesta.")

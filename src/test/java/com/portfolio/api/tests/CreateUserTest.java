@@ -1,6 +1,7 @@
 package com.portfolio.api.tests;
 
 import com.portfolio.api.base.BaseTest;
+import com.portfolio.api.base.TestDataReader;
 import com.portfolio.api.models.User;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
@@ -9,8 +10,12 @@ import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import io.restassured.response.Response;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,18 +24,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Feature("Usuarios - Creación (POST)")
 public class CreateUserTest extends BaseTest {
 
-    @DataProvider(name = "userDataProvider")
-    public Object[][] userData() {
-        return new Object[][]{
-                {"Diego Caldas", "QA Automation Engineer"}, // Caso Positivo
-                {"Diego Caldas", null},                      // Datos parciales (sin job)
-                {null, "QA Automation Engineer"},            // Datos parciales (sin name)
-                {"", ""},                                   // Strings vacíos
-        };
+    static Stream<Arguments> userDataProvider() {
+        Object[][] data = TestDataReader.readTestData("user-creation-data.json");
+        return Stream.of(data).map(row -> Arguments.of(row[0], row[1]));
     }
 
-    @Test(dataProvider = "userDataProvider",
-          description = "Crear usuario con diferentes combinaciones de datos")
+    @ParameterizedTest(name = "Crear usuario: {0}, {1}")
+    @MethodSource("userDataProvider")
     @Story("Alta de usuario - Data Driven")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Valida que la API acepte diversas combinaciones de nombre y job, "
@@ -40,10 +40,8 @@ public class CreateUserTest extends BaseTest {
 
         Response response = userClient.createUser(user);
 
-        // Validamos status code primero
-        response.then().statusCode(201);
+        response.then().spec(createdResponseSpec);
 
-        // Deserializamos el cuerpo a un POJO para usar AssertJ
         User userResponse = response.as(User.class);
 
         // Aserciones fluidas con AssertJ
@@ -53,7 +51,7 @@ public class CreateUserTest extends BaseTest {
         assertThat(userResponse.getCreatedAt()).isNotNull();
     }
 
-    @Test(description = "Intentar crear un usuario con un JSON mal formado")
+    @Test
     @Story("Manejo de errores - Payload Inválido")
     @Severity(SeverityLevel.NORMAL)
     @Description("Envía un cuerpo que no es JSON válido para validar que la API responda con error 400.")
@@ -65,6 +63,6 @@ public class CreateUserTest extends BaseTest {
                 .when()
                 .post("/users");
 
-        assertThat(response.getStatusCode()).isIn(400, 415, 201);
+        assertThat(response.getStatusCode()).isIn(400, 415);
     }
 }

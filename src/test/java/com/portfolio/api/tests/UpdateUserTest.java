@@ -1,6 +1,7 @@
 package com.portfolio.api.tests;
 
 import com.portfolio.api.base.BaseTest;
+import com.portfolio.api.base.TestDataReader;
 import com.portfolio.api.models.User;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
@@ -9,7 +10,12 @@ import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import io.restassured.response.Response;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,17 +23,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Feature("Usuarios - Actualización (PUT)")
 public class UpdateUserTest extends BaseTest {
 
-    @Test(description = "Actualizar el job de un usuario existente")
+    static Stream<Arguments> userDataProvider() {
+        Object[][] data = TestDataReader.readTestData("user-creation-data.json");
+        return Stream.of(data).map(row -> Arguments.of(row[0], row[1]));
+    }
+
+    @ParameterizedTest(name = "Actualizar usuario: {0}, {1}")
+    @MethodSource("userDataProvider")
     @Story("Actualización de usuario")
     @Severity(SeverityLevel.NORMAL)
     @Description("Envía PUT /users/{id} con un nuevo job y valida que la respuesta "
             + "refleje el cambio y traiga un updatedAt.")
-    public void deberiaActualizarElJobDeUnUsuario() {
-        User usuarioActualizado = new User("Diego Caldas", "Senior QA Automation Engineer");
+    public void deberiaActualizarElJobDeUnUsuario(String name, String job) {
+        User usuarioActualizado = new User(name, job);
 
         Response response = userClient.updateUser(2, usuarioActualizado);
 
-        response.then().statusCode(200);
+        response.then().spec(successResponseSpec);
 
         User userResponse = response.as(User.class);
 
@@ -35,7 +47,7 @@ public class UpdateUserTest extends BaseTest {
         assertThat(userResponse.getUpdatedAt()).isNotNull();
     }
 
-    @Test(description = "Intentar actualizar un usuario que no existe")
+    @Test
     @Story("Manejo de errores - Recurso no encontrado")
     @Severity(SeverityLevel.NORMAL)
     @Description("Envía PUT /users/{id} con un id inexistente y valida la respuesta.")

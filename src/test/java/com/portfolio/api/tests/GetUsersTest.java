@@ -9,28 +9,30 @@ import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.lessThan;
 
 @Epic("API Testing Portfolio")
 @Feature("Usuarios - Consulta (GET)")
 public class GetUsersTest extends BaseTest {
 
-    @DataProvider(name = "pageDataProvider")
-    public Object[][] pageData() {
-        return new Object[][]{
-                {1},
-                {2},
-        };
+    static Stream<Arguments> pageDataProvider() {
+        return Stream.of(
+                Arguments.of(1),
+                Arguments.of(2)
+        );
     }
 
-    @Test(dataProvider = "pageDataProvider",
-          description = "Listar usuarios de diferentes páginas y validar estructura")
+    @ParameterizedTest(name = "Listar usuarios de la página {0}")
+    @MethodSource("pageDataProvider")
     @Story("Listado de usuarios - Data Driven")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verifica que GET /users?page={page} responda 200, cumpla el esquema JSON "
@@ -39,8 +41,7 @@ public class GetUsersTest extends BaseTest {
         Response response = userClient.getUsers(page);
 
         response.then()
-                .spec(responseSpec)
-                .statusCode(200)
+                .spec(successResponseSpec)
                 .time(lessThan(2000L), TimeUnit.MILLISECONDS)
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/user-list-schema.json"));
 
@@ -52,7 +53,7 @@ public class GetUsersTest extends BaseTest {
         assertThat(data).isNotEmpty();
     }
 
-    @Test(description = "Obtener un usuario existente por id y validar sus datos")
+    @Test
     @Story("Detalle de usuario")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verifica que GET /users/{id} devuelva 200 con el esquema esperado "
@@ -61,8 +62,7 @@ public class GetUsersTest extends BaseTest {
         Response response = userClient.getUserById(2);
 
         response.then()
-                .spec(responseSpec)
-                .statusCode(200)
+                .spec(successResponseSpec)
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/single-user-schema.json"));
 
         // Extraemos el objeto data para validaciones fluidas con AssertJ
@@ -73,7 +73,7 @@ public class GetUsersTest extends BaseTest {
         assertThat(user.getAvatar()).startsWith("https://");
     }
 
-    @Test(description = "Solicitar un usuario inexistente debe responder 404")
+    @Test
     @Story("Manejo de errores")
     @Severity(SeverityLevel.NORMAL)
     @Description("Caso negativo: un id de usuario que no existe (id=23) debe devolver 404, "
@@ -83,9 +83,5 @@ public class GetUsersTest extends BaseTest {
 
         response.then()
                 .statusCode(404);
-    }
-
-    private static org.hamcrest.Matcher<Long> lessThan(long value) {
-        return org.hamcrest.Matchers.lessThan(value);
     }
 }
