@@ -66,7 +66,7 @@
         <!-- Allure para reportes -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-testng</artifactId>
+            <artifactId>allure-junit5</artifactId>
             <version>${allure.version}</version>
         </dependency>
 
